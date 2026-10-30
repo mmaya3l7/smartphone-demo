@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ひまわりマーケット（広告の閉じ方 練習用）</title>
+<style>
+:root{--bg:#f4f4f2;--ink:#222;--sub:#666;--line:#ddd;--brand:#ef7d00;--brand2:#c25f00;--card:#fff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;font-size:16px;line-height:1.5;padding-bottom:70px}
+header{position:sticky;top:0;z-index:20;background:var(--brand);padding:8px 10px 0}
+.top{display:flex;align-items:center;gap:8px}
+.logo{color:#fff;font-weight:800;font-size:19px;white-space:nowrap}
+.search{flex:1;background:#fff;border-radius:20px;padding:7px 12px;color:#999;font-size:14px}
+.cart{color:#fff;font-size:22px}
+nav{display:flex;gap:16px;overflow-x:auto;padding:8px 2px;color:#fff;font-size:14px;white-space:nowrap}
+nav span:first-child{font-weight:700;border-bottom:3px solid #fff}
+.banner{margin:10px;border-radius:10px;background:linear-gradient(120deg,#fff3d6,#ffd9a0);padding:14px;font-weight:700}
+.banner small{display:block;font-weight:400;color:var(--sub)}
+h2{margin:14px 12px 4px;font-size:17px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:6px 10px}
+.grp{scroll-margin-top:96px}
+.card{background:var(--card);border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.pic{height:120px;display:flex;align-items:center;justify-content:center;font-size:58px}
+.cb{padding:8px 10px 10px}
+.nm{font-size:14px;height:42px;overflow:hidden}
+.st{color:#f5a300;font-size:13px}
+.pr{color:#c40000;font-weight:800;font-size:18px}
+.pr small{font-size:12px;font-weight:400;color:var(--sub)}
+.add{margin-top:6px;width:100%;border:0;border-radius:6px;background:#ffd24d;padding:8px;font-size:14px;font-weight:700}
+.lk{display:none!important}
+#lock{margin:14px 12px;padding:14px;text-align:center;background:#fff;border:2px dashed #bbb;border-radius:10px;color:var(--sub);font-size:15px}
+#end{margin:14px 10px;padding:20px;background:#e8f6e9;border-radius:12px;text-align:center}
+#end button{margin-top:10px;font-size:17px;padding:12px 24px;border:0;border-radius:8px;background:#2e7d32;color:#fff}
+footer{padding:20px;text-align:center;color:#999;font-size:12px}
+
+/* ---------- 広告共通 ---------- */
+.pr-tag{position:absolute;font-size:10px;color:#999;background:rgba(255,255,255,.85);padding:0 4px;border:1px solid #ccc;border-radius:3px;line-height:15px}
+.xb{position:absolute;cursor:pointer;user-select:none;padding:6px 8px;line-height:1}
+.ad{position:relative}
+.big{display:block;width:100%;border:0;border-radius:8px;padding:14px;font-size:18px;font-weight:800;color:#fff;margin-top:12px}
+.shake{animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* インライン */
+.inl{margin:6px 10px;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.inl .pr-tag{right:6px;bottom:6px}
+
+/* オーバーレイ */
+.ov{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55)}
+.full{background:#fff;align-items:stretch;justify-content:stretch}
+.full .ad{width:100%;height:100%;padding:60px 22px 40px;text-align:center;display:flex;flex-direction:column;justify-content:center}
+.pop{width:84%;max-width:360px;border-radius:14px;background:#fff;padding:34px 20px 20px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.ov.corner{background:none;inset:auto 8px 74px auto;display:block;pointer-events:none}
+.ov.corner .pop{pointer-events:auto;width:230px;padding:30px 14px 14px;text-align:left}
+
+/* トースト */
+#toast{position:fixed;left:10px;right:10px;top:max(10px,env(safe-area-inset-top));z-index:300;padding:14px 16px;border-radius:10px;color:#fff;font-weight:700;font-size:16px;box-shadow:0 4px 16px rgba(0,0,0,.35);display:none}
+#toast.ok{background:#2e7d32}
+#toast.ng{background:#c62828}
+#toast.nt{background:#455a64}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><div class="logo">🌻ひまわりマーケット</div><div class="search">🔍 商品を検索</div><div class="cart">🛒</div></div>
+  <nav><span>おすすめ</span><span>日用品</span><span>家電</span><span>食品</span><span>キッチン</span><span>タイムセール</span></nav>
+</header>
+<div class="banner">🎁 秋の感謝祭　全品ポイント5倍<small>送料無料ライン 3,000円（税込）</small></div>
+<main id="feed"></main>
+<div id="lock">▼ ここから先は、広告を閉じると見られます</div>
+<footer>© ひまわりマーケット（練習用の架空サイトです）</footer>
+<div id="toast"></div>
+
+<script>
+const P=[
+["🧻","トイレットペーパー 12ロール 3倍巻き","498","#e3f2fd"],["🧴","やさしい食器用洗剤 詰め替え 2個","358","#e8f5e9"],["🧼","薬用ハンドソープ 泡タイプ","298","#fff8e1"],["🪥","やわらか歯ブラシ 5本セット","398","#fce4ec"],
+["🍚","北海道産 ななつぼし 5kg","2,480","#fff3e0"],["🥚","朝採れ卵 20個入り","498","#fffde7"],["🍎","サンふじりんご 約2kg","1,280","#ffebee"],["☕","ドリップコーヒー 50袋","1,180","#efebe9"],
+["🍚","炊飯器 5.5合 マイコン式","7,980","#eceff1"],["🌀","タワー型 扇風機 リモコン付","5,480","#e0f7fa"],["💡","LED電球 6個パック","1,280","#fffde7"],["🔌","延長コード 3m 6口","898","#f3e5f5"],
+["🍜","国産そば 乾麺 10把","780","#fff3e0"],["🐟","北海道産 鮭フレーク 3本","1,080","#fbe9e7"],["🍪","お徳用 お煎餅 詰合せ","598","#fff8e1"],["🍵","国産 緑茶ティーバッグ 100個","880","#e8f5e9"],
+["🍳","フッ素加工 フライパン 26cm","1,980","#e1f5fe"],["🔪","ステンレス 三徳包丁","2,280","#eceff1"],["🥣","耐熱ガラス 保存容器 6点","1,480","#e0f2f1"],["🫖","ステンレス 電気ケトル 1L","2,980","#fce4ec"],
+["🧦","あったか靴下 5足組","780","#f3e5f5"],["🧤","ふわふわ手袋 男女兼用","980","#ede7f6"],["☂️","軽量 折りたたみ傘","1,480","#e3f2fd"],["🔦","LED 懐中電灯 防災用","1,180","#fff8e1"]];
+const T=["日用品","家電","食品（ごはん・お茶）","家電・生活","食品（まとめ買い）","キッチン用品"];
+const X=(s,t)=>`<span class="xb" style="${s}">${t}</span>`;
+/* t: in=インライン / full=全画面 / pop=ポップアップ / cor=端のポップアップ */
+const ADS=[
+{t:"in",h:`<div class="ad" style="background:linear-gradient(120deg,#ff5f6d,#ffc371);color:#fff;padding:26px 18px 30px;text-align:center">
+ ${X("left:0;top:0;font-size:13px;color:#e9c0a8","×")}<span class="pr-tag">PR</span>
+ <div style="font-size:14px">本日限り・先着100名様</div><div style="font-size:32px;font-weight:900">限定セール 70%OFF</div>
+ <button class="big" style="background:#c40000">今すぐ見る</button></div>`},
+{t:"full",h:`<div class="ad" style="background:#0f2a44;color:#fff">
+ ${X("right:6px;top:8px;font-size:12px;color:#6d7f91","Skip")}<span class="pr-tag" style="left:10px;top:12px">スポンサー</span>
+ <div style="font-size:64px">📱</div><div style="font-size:26px;font-weight:900;margin:8px 0">公式アプリで<br>もっとお得に！</div>
+ <div style="color:#b7c7d8">初回500円クーポンをプレゼント</div>
+ <button class="big" style="background:#1db954">無料でダウンロード</button></div>`},
+{t:"pop",h:`<div class="pop ad">${X("left:2px;top:4px;font-size:15px;color:#bbb","＜")}<span class="pr-tag" style="right:8px;top:8px">PR</span>
+ <div style="font-size:46px">🔋</div><div style="font-size:21px;font-weight:900;color:#d84315">バッテリーが低下しています</div>
+ <div style="font-size:14px;color:var(--sub)">残り 9％ ／ 今すぐ最適化してください</div>
+ <button class="big" style="background:#1976d2">今すぐ最適化</button></div>`},
+{t:"in",h:`<div class="ad" style="background:#eaf2ff;border:2px solid #1976d2;padding:20px 16px 34px;text-align:center">
+ <span class="pr-tag" style="left:6px;top:6px">PR・広告</span>
+ <div style="font-size:40px;margin-top:10px">⚙️</div><div style="font-size:20px;font-weight:900;color:#0d47a1">システムをアップデートしてください</div>
+ <div style="font-size:14px;color:#444">お使いの端末は最新の状態ではありません</div>
+ <button class="big" style="background:#1976d2">今すぐアップデート</button>
+ ${X("right:4px;bottom:4px;font-size:11px;color:#a5b4c8","閉じる")}</div>`},
+{t:"full",h:`<div class="ad" style="background:#b71c1c;color:#fff">
+ <span class="pr-tag" style="left:10px;top:12px">PR</span>
+ <div style="position:absolute;right:8px;top:6px;font-size:26px;font-weight:900;padding:4px 10px">×</div>
+ <div style="font-size:60px">⚠️</div><div style="font-size:26px;font-weight:900;margin:8px 0">ウイルスに感染しました！</div>
+ <div>個人情報が盗まれる恐れがあります。<br>今すぐ駆除してください。</div>
+ <button class="big" style="background:#ffd600;color:#222">今すぐ駆除する</button>
+ ${X("left:6px;bottom:10px;font-size:11px;color:#e29a9a","CLOSE")}</div>`},
+{t:"cor",h:`<div class="pop ad" style="border:2px solid var(--brand)">${X("left:0;top:0;font-size:14px;color:#c9c9c9","×")}<span class="pr-tag" style="right:6px;top:6px">PR</span>
+ <div style="font-weight:900;font-size:17px">🎁 ポイント2倍！</div><div style="font-size:13px;color:var(--sub)">今から30分間だけ</div>
+ <button class="big" style="background:var(--brand);padding:10px;font-size:15px">受け取る</button></div>`}
+];
+const feed=document.getElementById("feed"),lock=document.getElementById("lock"),toast=document.getElementById("toast");
+let tm;
+function say(m,c,ms){toast.textContent=m;toast.className=c;toast.style.display="block";clearTimeout(tm);tm=setTimeout(()=>toast.style.display="none",ms||4500)}
+/* 商品と広告スロットを作る */
+P.forEach((p,i)=>{});
+for(let g=0;g<6;g++){
+  let h=`<section class="grp lk" id="g${g}"><h2>${T[g]}</h2><div class="grid">`;
+  for(let k=0;k<4;k++){const p=P[g*4+k];
+    h+=`<div class="card" data-p><div class="pic" style="background:${p[3]}">${p[0]}</div><div class="cb"><div class="nm">${p[1]}</div><div class="st">★★★★☆ <span style="color:#888">(${120+g*37+k*11})</span></div><div class="pr">¥${p[2]} <small>税込</small></div><button class="add">カートに入れる</button></div></div>`}
+  h+=`</div></section>`;
+  if(ADS[g].t==="in")h+=`<div class="inl lk" id="s${g}"></div>`;
+  feed.insertAdjacentHTML("beforeend",h);
+}
+feed.addEventListener("click",e=>{if(e.target.closest("[data-p]"))say("これは練習用のサイトです。商品は購入されません。","nt",3000)});
+
+function reveal(i){
+  document.getElementById("g"+i).classList.remove("lk");
+  lock.style.display="none";
+  const a=ADS[i];
+  if(a.t==="in"){const s=document.getElementById("s"+i);s.innerHTML=a.h;s.classList.remove("lk");wire(s,i,s);}
+  else setTimeout(()=>{
+    const o=document.createElement("div");
+    o.className="ov "+(a.t==="full"?"full":a.t==="cor"?"corner":"");
+    o.innerHTML=a.h;document.body.appendChild(o);wire(o,i,o);
+  },i===0?0:2600);
+  if(i>0)setTimeout(()=>document.getElementById("g"+i).scrollIntoView({behavior:"smooth",block:"start"}),50);
+  if(a.t==="in"&&i>0)setTimeout(()=>document.getElementById("s"+i).scrollIntoView({behavior:"smooth",block:"center"}),900);
+}
+function wire(el,i,host){
+  el.addEventListener("click",e=>{
+    e.stopPropagation();
+    if(e.target.closest(".xb")){
+      host.remove();say("正解です！広告を閉じられました。","ok",3500);
+      if(i<5){lock.style.display="block";lock.textContent="▼ 続きの商品を読み込んでいます…";setTimeout(()=>reveal(i+1),700)}
+      else finish();
+    }else{
+      say("これは広告の本体（または偽のボタン）です！本物の『閉じる（× / CLOSE / Skipなど）』を探してみましょう。","ng",6000);
+      const t=el.querySelector(".ad")||el;t.classList.remove("shake");void t.offsetWidth;t.classList.add("shake");
+    }
+  });
+}
+function finish(){
+  feed.insertAdjacentHTML("beforeend",`<div id="end"><div style="font-size:40px">🎉</div><b style="font-size:18px">すべての広告を閉じられました！</b><br>本物のサイトでも、あわてずに「閉じるボタン」を探しましょう。<br><button onclick="location.reload()">もういちど練習する</button></div>`);
+  setTimeout(()=>document.getElementById("end").scrollIntoView({behavior:"smooth",block:"center"}),400);
+}
+reveal(0);
+</script>
+</body>
+</html>
