@@ -40,7 +40,7 @@ footer{padding:20px;text-align:center;color:#999;font-size:12px}
 .xb{position:absolute;cursor:pointer;user-select:none;padding:6px 8px;line-height:1}
 .ad{position:relative}
 .big{display:block;width:100%;border:0;border-radius:8px;padding:14px;font-size:18px;font-weight:800;color:#fff;margin-top:12px}
-.shake{animation:sh .35s}
+.shake{animation:sh .35s}.hintbar{position:fixed;left:10px;right:10px;z-index:250;background:#fff8c4;border:3px solid #f9a825;border-radius:10px;padding:12px 14px;font-weight:700;font-size:16px;color:#222;box-shadow:0 4px 16px rgba(0,0,0,.3)}
 @keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 
 /* インライン */
@@ -56,7 +56,7 @@ footer{padding:20px;text-align:center;color:#999;font-size:12px}
 .ov.corner .pop{pointer-events:auto;width:230px;padding:30px 14px 14px;text-align:left}
 
 /* トースト */
-#toast{position:fixed;left:10px;right:10px;top:max(10px,env(safe-area-inset-top));z-index:300;padding:14px 16px;border-radius:10px;color:#fff;font-weight:700;font-size:16px;box-shadow:0 4px 16px rgba(0,0,0,.35);display:none}
+#toast{position:fixed;left:10px;right:10px;z-index:300;padding:14px 16px;border-radius:10px;color:#fff;font-weight:700;font-size:16px;box-shadow:0 4px 16px rgba(0,0,0,.35);display:none}
 #toast.ok{background:#2e7d32}
 #toast.ng{background:#c62828}
 #toast.nt{background:#455a64}
@@ -98,26 +98,28 @@ const ADS=[
  <div style="font-size:46px">🔋</div><div style="font-size:21px;font-weight:900;color:#d84315">バッテリーが低下しています</div>
  <div style="font-size:14px;color:var(--sub)">残り 9％ ／ 今すぐ最適化してください</div>
  <button class="big" style="background:#1976d2">今すぐ最適化</button></div>`},
-{t:"in",h:`<div class="ad" style="background:#eaf2ff;border:2px solid #1976d2;padding:20px 16px 34px;text-align:center">
- <span class="pr-tag" style="left:6px;top:6px">PR・広告</span>
- <div style="font-size:40px;margin-top:10px">⚙️</div><div style="font-size:20px;font-weight:900;color:#0d47a1">システムをアップデートしてください</div>
- <div style="font-size:14px;color:#444">お使いの端末は最新の状態ではありません</div>
- <button class="big" style="background:#1976d2">今すぐアップデート</button>
- ${X("right:4px;bottom:4px;font-size:11px;color:#a5b4c8","閉じる")}</div>`},
-{t:"full",h:`<div class="ad" style="background:#b71c1c;color:#fff">
+{t:"in",h:`<div class="ad" style="background:#fff;color:#0b2a5b;border:3px solid #0b2a5b;padding:20px 16px 34px;text-align:center">
+ <span class="pr-tag" style="left:6px;top:6px;right:auto;bottom:auto">PR・広告</span>
+ <div style="font-size:40px;margin-top:10px">⚙️</div><div style="font-size:20px;font-weight:900;color:#0b2a5b">システムをアップデートしてください</div>
+ <div style="font-size:14px;color:#334e7a">お使いの端末は最新の状態ではありません</div>
+ <button class="big" style="background:#0b2a5b">今すぐアップデート</button>
+ ${X("right:4px;bottom:4px;font-size:11px;color:#a3adbd","閉じる")}</div>`},
+{t:"full",h:`<div class="ad" style="background:#fff;color:#222;border:6px solid #d32f2f">
  <span class="pr-tag" style="left:10px;top:12px">PR</span>
- <div style="position:absolute;right:8px;top:6px;font-size:26px;font-weight:900;padding:4px 10px">×</div>
- <div style="font-size:60px">⚠️</div><div style="font-size:26px;font-weight:900;margin:8px 0">ウイルスに感染しました！</div>
+ <div style="position:absolute;right:8px;top:6px;font-size:26px;font-weight:900;padding:4px 10px;color:#444">×</div>
+ <div style="font-size:60px">⚠️</div><div style="font-size:26px;font-weight:900;margin:8px 0;color:#d32f2f">ウイルスに感染しました！</div>
  <div>個人情報が盗まれる恐れがあります。<br>今すぐ駆除してください。</div>
- <button class="big" style="background:#ffd600;color:#222">今すぐ駆除する</button>
- ${X("left:6px;bottom:10px;font-size:11px;color:#e29a9a","CLOSE")}</div>`},
-{t:"cor",h:`<div class="pop ad" style="border:2px solid var(--brand)">${X("left:0;top:0;font-size:14px;color:#c9c9c9","×")}<span class="pr-tag" style="right:6px;top:6px">PR</span>
+ <button class="big" style="background:#d32f2f">今すぐ駆除する</button>
+ ${X("left:6px;bottom:10px;font-size:11px;color:#b5b5b5","CLOSE")}</div>`},
+{t:"pop",h:`<div class="pop ad" style="border:2px solid var(--brand)">${X("left:0;top:0;font-size:14px;color:#c9c9c9","×")}<span class="pr-tag" style="right:6px;top:6px">PR</span>
  <div style="font-weight:900;font-size:17px">🎁 ポイント2倍！</div><div style="font-size:13px;color:var(--sub)">今から30分間だけ</div>
  <button class="big" style="background:var(--brand);padding:10px;font-size:15px">受け取る</button></div>`}
 ];
 const feed=document.getElementById("feed"),lock=document.getElementById("lock"),toast=document.getElementById("toast");
 let tm;
-function say(m,c,ms){toast.textContent=m;toast.className=c;toast.style.display="block";clearTimeout(tm);tm=setTimeout(()=>toast.style.display="none",ms||4500)}
+let hintH=0;
+function sideOf(x){const r=x.getBoundingClientRect();return (r.top+r.height/2)<innerHeight/2?"bottom":"top"}
+function say(m,c,ms,pos){toast.style.top=toast.style.bottom="auto";if(pos==="bottom")toast.style.bottom="calc(max(10px,env(safe-area-inset-bottom)) + "+hintH+"px)";else toast.style.top="calc(max(10px,env(safe-area-inset-top)) + "+hintH+"px)";toast.textContent=m;toast.className=c;toast.style.display="block";clearTimeout(tm);tm=setTimeout(()=>toast.style.display="none",ms||4500)}
 /* 商品と広告スロットを作る */
 P.forEach((p,i)=>{});
 for(let g=0;g<6;g++){
@@ -144,14 +146,34 @@ function reveal(i){
   if(a.t==="in"&&i>0)setTimeout(()=>document.getElementById("s"+i).scrollIntoView({behavior:"smooth",block:"center"}),900);
 }
 function wire(el,i,host){
+  let fails=0;
+  let hintEl=null;
+  const emph=()=>{
+    if(hintEl)return;
+    const xb=el.querySelector(".xb");
+    el.querySelectorAll(".xb").forEach(x=>{x.style.fontSize=(parseFloat(getComputedStyle(x).fontSize)+2)+"px"});
+    let r=xb.getBoundingClientRect();
+    if(r.bottom<0||r.top>innerHeight){xb.scrollIntoView({block:"center",behavior:"instant"});r=xb.getBoundingClientRect()}
+    const v=(r.top+r.height/2)<innerHeight/2?"上":"下",cx=(r.left+r.width/2)/innerWidth,h=cx<.33?"左":cx>.66?"右":"中央";
+    const where=h==="中央"?v+"の中央":v+h;
+    hintEl=document.createElement("div");hintEl.className="hintbar";
+    hintEl.textContent="💡ヒント：「"+xb.textContent.trim()+"」が閉じるボタンです。この広告の"+where+"にあります。";
+    hintEl.style.top=hintEl.style.bottom="auto";
+    const side=sideOf(xb);
+    if(side==="bottom")hintEl.style.bottom="max(10px,env(safe-area-inset-bottom))";else hintEl.style.top="max(10px,env(safe-area-inset-top))";
+    document.body.appendChild(hintEl);hintH=hintEl.offsetHeight+10;
+  };
+  const timer=setTimeout(emph,10000);
   el.addEventListener("click",e=>{
     e.stopPropagation();
     if(e.target.closest(".xb")){
-      host.remove();say("正解です！広告を閉じられました。","ok",3500);
+      clearTimeout(timer);host.remove();if(hintEl){hintEl.remove();hintEl=null;hintH=0}say("正解です！広告を閉じられました。","ok",3500);
       if(i<5){lock.style.display="block";lock.textContent="▼ 続きの商品を読み込んでいます…";setTimeout(()=>reveal(i+1),700)}
       else finish();
     }else{
-      say("これは広告の本体（または偽のボタン）です！本物の『閉じる（× / CLOSE / Skipなど）』を探してみましょう。","ng",6000);
+      if(++fails>=5)emph();
+      const pos=sideOf(el.querySelector(".xb"));
+      say("これは広告の本体（または偽のボタン）です！本物の『閉じる（× / CLOSE / Skipなど）』を探してみましょう。","ng",6000,pos);
       const t=el.querySelector(".ad")||el;t.classList.remove("shake");void t.offsetWidth;t.classList.add("shake");
     }
   });
